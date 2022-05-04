@@ -1,7 +1,7 @@
 //
 // Created by VirtualCC on 2020-12-14.
 //
-#pragma once;
+#pragma once
 
 /**
  * Basic logging framework for NDK

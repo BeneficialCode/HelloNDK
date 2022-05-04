@@ -335,6 +335,7 @@ static void* nativeThreads(void* args) {
 
     /* Detach the current thread from virtual machine. */
     cachedJvm->DetachCurrentThread();
+    return nullptr;
 }
 
 extern "C"
@@ -442,7 +443,7 @@ Java_com_example_hellondk_MainActivity_systemConfiguration(JNIEnv *env, jobject 
     else{
         char name[PROP_NAME_MAX];
         if(0==__system_property_read(property,name,value)) {
-            MY_LOG_INFO("%s is empty.");
+            MY_LOG_INFO("property is empty.");
         }else{
             MY_LOG_INFO("%s: %s",name,value);
         }

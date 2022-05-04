@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("native-lib");
         // System.load()
         System.loadLibrary("threads-lib");
+        System.loadLibrary("hook-lib");
     }
 
     /**
@@ -97,8 +98,8 @@ public class MainActivity extends AppCompatActivity {
                 ((Button)button).setText(stringFromJNI());
             }
         });
-
-
+        // /data/app/com.example.hellondk--1cZcnIU6dpdXKZkFgoTXA==/lib/arm64
+        String libPath = getApplicationContext().getApplicationInfo().nativeLibraryDir;
 
         JavaClass clazz = new JavaClass();
         clazz.foo();
@@ -119,6 +120,9 @@ public class MainActivity extends AppCompatActivity {
 
         newObject();
 
+        /*print();
+        Unhook();
+        print();*/
     }
 
     @Override
@@ -232,4 +236,7 @@ public class MainActivity extends AppCompatActivity {
     private native void systemConfiguration();
 
     public native void newObject();
+
+    public native void print();
+    public native void Unhook();
 }
