@@ -38,6 +38,22 @@ add_library( # Sets the name of the library.
 
         hook-lib.cpp)
 
+add_library( # Sets the name of the library.
+        hooklegend-lib
+        # Sets the library as a shared library.
+        SHARED
+        # Provides a relative path to your source file(s).
+
+        hooklegend-lib.cpp)
+
+target_link_libraries( # Specifies the target library.
+        hooklegend-lib
+        # 添加 dobby 库
+        dobby
+        # Links the target library to the log library
+        # included in the NDK.
+        ${log-lib})
+
 target_link_libraries( # Specifies the target library.
         hook-lib
         # 添加 dobby 库
@@ -96,6 +112,13 @@ target_link_libraries( # Specifies the target library.
 
 target_link_libraries( # Specifies the target library.
         hook-lib
+
+        # Links the target library to the log library
+        # included in the NDK.
+        ${log-lib} )
+
+target_link_libraries( # Specifies the target library.
+        hooklegend-lib
 
         # Links the target library to the log library
         # included in the NDK.

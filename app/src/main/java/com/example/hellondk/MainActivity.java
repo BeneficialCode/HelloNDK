@@ -1,7 +1,14 @@
 package com.example.hellondk;
 
-import androidx.appcompat.app.AppCompatActivity;
+import static android.os.Environment.DIRECTORY_DOWNLOADS;
+import static android.os.Environment.getExternalStoragePublicDirectory;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,6 +16,11 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 // 基本类型：boolean,byte,char,short,int,long,float,double
 // 引用类型：String,arrays,classes
@@ -56,10 +68,38 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public final String[] EXTERNAL_PERMS = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE
+    };
+
+    public final int EXTERNAL_REQUEST = 138;
+
+    public boolean requestForPermission() {
+        boolean isPermissionOn = true;
+        final int version = Build.VERSION.SDK_INT;
+        if (version >= 23) {
+            if (!canAccessExternalSd()) {
+                isPermissionOn = false;
+                requestPermissions(EXTERNAL_PERMS, EXTERNAL_REQUEST);
+            }
+        }
+
+        return isPermissionOn;
+    }
+
+    public boolean canAccessExternalSd() {
+        return (hasPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE));
+    }
+
+    private boolean hasPermission(String perm) {
+        return (PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(this, perm));
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        requestForPermission();
 
         // 初始化原生代码
         nativeInit();
@@ -120,9 +160,14 @@ public class MainActivity extends AppCompatActivity {
 
         newObject();
 
-        /*print();
-        Unhook();
-        print();*/
+        File dirDownload = getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS);
+        File[] subFile = dirDownload.listFiles();
+        for(int len=0;len<subFile.length;len++){
+            String filename = subFile[len].getName();
+            if(filename.trim().toLowerCase().endsWith(".lua")){
+                String lua = filename;
+            }
+        }
     }
 
     @Override
@@ -194,6 +239,20 @@ public class MainActivity extends AppCompatActivity {
         time = end-start;
         Log.i("Log","time: "+time);
     }
+
+    private List<String> GetLuaFileName(String fileDir){
+        List<String> pathList = new ArrayList<>();
+        File file = new File(fileDir);
+        File[] subFile = file.listFiles();
+        for(int len=0;len<subFile.length;len++){
+            String filename = subFile[len].getName();
+            if(filename.trim().toLowerCase().endsWith(".lua")){
+                pathList.add(filename);
+            }
+        }
+        return pathList;
+    }
+
 
     /**
      * 原生worker.
